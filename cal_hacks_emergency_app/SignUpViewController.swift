@@ -1,0 +1,79 @@
+//
+//  SignUpViewController.swift
+//  cal_hacks_emergency_app
+//
+//  Created by Siddharth Prothia on 10/19/24.
+//
+
+import UIKit
+import FirebaseDatabase
+import FirebaseAuth
+import FirebaseFirestore
+
+class SignUpViewController: UIViewController {
+    
+    
+    @IBOutlet weak var firstName: UITextField!
+    
+    @IBOutlet weak var lastName: UITextField!
+    
+    @IBOutlet weak var email: UITextField!
+    
+    @IBOutlet weak var password: UITextField!
+    
+    @IBOutlet weak var age: UITextField!
+    
+    @IBOutlet weak var city: UITextField!
+    
+    @IBOutlet weak var emergencyNumber: UITextField!
+    
+    @IBOutlet weak var additionalNotes: UITextView!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        
+    }
+    
+    @IBAction func signUp(_ sender: Any) {
+        signUpUser(email: email.text!, password: password.text! , firstName: firstName.text!, lastName: lastName.text!, age: age.text!, city: city.text!, emergencyNumber: emergencyNumber.text!, additionalNotes: additionalNotes.text!)
+        print("Trying to sign up user!")
+    }
+    
+    func signUpUser(email: String, password: String, firstName: String, lastName: String, age: String, city: String, emergencyNumber: String, additionalNotes: String) {
+        
+        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+            if let error = error {
+                print("Error creating user: \(error.localizedDescription)")
+                return
+            }
+            
+            guard let userId = authResult?.user.uid else { return }
+            
+            let userData: [String: Any] = [
+                "firstName": firstName,
+                "lastName": lastName,
+                "email": email,
+                "age": age,
+                "address": city,
+                "emergencyNumber": emergencyNumber,
+                "additionalNotes": additionalNotes,
+            ]
+            
+            let db = Firestore.firestore()
+            
+           
+            db.collection("users").document(userId).setData(userData) { error in
+                if let error = error {
+                    print("Error storing user data: \(error.localizedDescription)")
+                } else {
+                    print("User data successfully saved!")
+                }
+            }
+            
+        }
+    }
+   
+
+    
+}
