@@ -16,7 +16,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var imageThree: UIImageView!
     @IBOutlet weak var clearButton: UIButton!
     @IBOutlet weak var recordVoice: UIButton!
-    @IBOutlet weak var playVoice: UIButton!
 
     var photoIndex = 0
     var audioRecorder: AVAudioRecorder?
@@ -26,9 +25,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        playVoice.isHidden = true
+        recordVoice.setTitle("", for: .normal)
         configureAudioSession()
+        recordVoice.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
+
         
     }
     
@@ -66,11 +66,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
 
     }
 
-    @IBAction func playVoiceButton(_ sender: Any) {
-        if let fileURL = audioFileName {
-            playAudio(fileURL: fileURL)
-        }
-    }
+//    @IBAction func playVoiceButton(_ sender: Any) {
+//        if let fileURL = audioFileName {
+//            playAudio(fileURL: fileURL)
+//        }
+//    }
 
 
     @IBAction func clearImages(_ sender: Any) {
@@ -100,8 +100,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             audioRecorder?.record()
 
             isRecording = true
-            recordVoice.setTitle("Stop", for: .normal)
-            playVoice.isHidden = true
+//            playVoice.isHidden = true
 
         } catch {
             displayError(message: "Recording failed")
@@ -109,21 +108,26 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
 
     func stopRecording() {
+        showAlert(message: "Recording has been saved!")
         audioRecorder?.stop()
         isRecording = false
         recordVoice.setTitle("Record", for: .normal)
-        playVoice.isHidden = false
+    }
+    
+    func showAlert(message: String) {
+        let alertController = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    @objc func buttonPressed(_ sender: UIButton) {
+        
+        sender.setImage(nil, for: .normal)  // Remove the image
+        sender.setTitle("Stop Recording", for: .normal)  // Set text
+        sender.titleLabel?.font = UIFont.systemFont(ofSize: 18)  // Optional: Set font size
     }
 
-    func playAudio(fileURL: URL) {
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: fileURL)
-            audioPlayer?.delegate = self
-            audioPlayer?.play()
-        } catch {
-            displayError(message: "Playback failed")
-        }
-    }
+    
 
     func getDocumentsDirectory() -> URL {
         let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)

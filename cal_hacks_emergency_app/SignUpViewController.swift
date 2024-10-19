@@ -6,11 +6,10 @@
 //
 
 import UIKit
-import FirebaseDatabase
 import FirebaseAuth
 import FirebaseFirestore
 
-class SignUpViewController: UIViewController {
+class SignUpViewController: UIViewController, UITextFieldDelegate {
     
     
     @IBOutlet weak var firstName: UITextField!
@@ -32,11 +31,21 @@ class SignUpViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        firstName.delegate = self
+        lastName.delegate = self
+        age.delegate = self
+        city.delegate = self
+        emergencyNumber.delegate = self
+        firstName.delegate = self
+        firstName.delegate = self
+        
         
     }
     
     @IBAction func signUp(_ sender: Any) {
         signUpUser(email: email.text!, password: password.text! , firstName: firstName.text!, lastName: lastName.text!, age: age.text!, city: city.text!, emergencyNumber: emergencyNumber.text!, additionalNotes: additionalNotes.text!)
+        
+
         print("Trying to sign up user!")
     }
     
@@ -72,6 +81,20 @@ class SignUpViewController: UIViewController {
             }
             
         }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        firstName.resignFirstResponder()
+        lastName.resignFirstResponder()
+        email.resignFirstResponder()
+        password.resignFirstResponder()
+        age.resignFirstResponder()
+        city.resignFirstResponder()
+        emergencyNumber.resignFirstResponder()
+        additionalNotes.resignFirstResponder()
+        
+        return true
     }
    
 

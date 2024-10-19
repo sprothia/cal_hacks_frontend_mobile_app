@@ -9,7 +9,7 @@ import UIKit
 import Firebase
 import FirebaseAuth
 
-class SignInViewController: UIViewController {
+class SignInViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var emailTf: UITextField!
     
@@ -18,7 +18,8 @@ class SignInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        emailTf.delegate = self
+        passwordTf.delegate = self
     }
     
     @IBAction func signIn(_ sender: Any) {
@@ -51,6 +52,16 @@ class SignInViewController: UIViewController {
         alertController.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        emailTf.resignFirstResponder()
+        passwordTf.resignFirstResponder()
+        
+        return true
+    }
+   
     
 
 }
