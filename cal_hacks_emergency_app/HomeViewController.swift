@@ -11,7 +11,6 @@ import FirebaseAuth
 
 class HomeViewController: UIViewController, CLLocationManagerDelegate {
 
-    @IBOutlet weak var addressLbl: UILabel!
     @IBOutlet weak var coordinatesLbl: UILabel!
     
     @IBOutlet weak var helpBtn: UIButton!
@@ -28,7 +27,14 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
             locationManager.desiredAccuracy = kCLLocationAccuracyBest
             locationManager.startUpdatingLocation()
         }
-
+        
+        helpBtn.backgroundColor = .clear
+        
+        helpBtn.layer.shadowColor = UIColor.black.cgColor
+        helpBtn.layer.shadowOpacity = 0.5
+        helpBtn.layer.shadowOffset = CGSize(width: 5, height: 5)
+        helpBtn.layer.shadowRadius = 10
+                
         
     }
     
@@ -37,7 +43,7 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
     }
     
     @IBAction func signOut(_ sender: Any) {
-        
+
         do {
             try Auth.auth().signOut()
             print("User logged out successfully")
@@ -64,7 +70,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
                 CLGeocoder().reverseGeocodeLocation(location) { placemarks, error in
                     if let error = error {
                         print("Failed to reverse geocode: \(error.localizedDescription)")
-                        self.addressLbl.text = "Error fetching address"
                         return
                     }
                     
@@ -72,7 +77,6 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
                         let address = "\(placemark.name ?? ""), \(placemark.locality ?? ""), \(placemark.administrativeArea ?? ""), \(placemark.country ?? "")"
                         
                         DispatchQueue.main.async {
-                            self.addressLbl.text = address
                             self.coordinatesLbl.text = "Lat: \(latitude), Long: \(longitude)"
                         }
                     }
@@ -83,13 +87,13 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         if status == .denied || status == .restricted {
-            addressLbl.text = "Location access denied"
+            coordinatesLbl.text = "Location access denied"
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Failed to get location: \(error.localizedDescription)")
-        addressLbl.text = "Unable to fetch location"
+        coordinatesLbl.text = "Unable to fetch location"
     }
     
 
