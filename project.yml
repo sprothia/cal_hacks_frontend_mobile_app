@@ -1,0 +1,28 @@
+name: cal_hacks_emergency_app
+options:
+  bundleIdPrefix: com.sprothia
+  deploymentTarget:
+    iOS: '14.0'
+
+packages:
+  Firebase:
+    url: https://github.com/firebase/firebase-ios-sdk
+    from: "10.27.0"
+
+targets:
+  cal_hacks_emergency_app:
+    type: application
+    platform: iOS
+    sources: [cal_hacks_emergency_app]
+    resources:
+     - cal_hacks_emergency_app/Main.storyboard
+     - cal_hacks_emergency_app/Assets.xcassets
+    settings:
+      base:
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: Gautam Prothia
+        SWIFT_VERSION: '5.0'
+        INFOPLIST_FILE: cal_hacks_emergency_app/Info.plist
+
+    dependencies:
+      - package: Firebase
