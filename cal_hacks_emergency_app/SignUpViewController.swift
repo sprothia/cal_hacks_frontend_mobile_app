@@ -49,6 +49,22 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         print("Trying to sign up user!")
     }
     
+    @IBAction func testButton(_ sender: Any) {
+        print("sent test payload")
+        
+        var dataDict : [String : Any] = ["id" : 100, "name" : "nipun", "is_student" : true]
+        var rawData : Data = Data()
+        
+        do{
+            try rawData.pack(dataDict)
+        }
+        catch{
+            print("ERROR PACKING DATA: \(error)");
+        }
+        
+        CommunicationClass.obj.sendData(rawData)
+    }
+    
     func signUpUser(email: String, password: String, firstName: String, lastName: String, age: String, city: String, emergencyNumber: String, additionalNotes: String) {
         
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in

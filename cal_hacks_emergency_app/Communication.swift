@@ -39,24 +39,38 @@ class CommunicationClass{
     
     //
     
-    public func connect() -> Bool{
-                            
-        do{
-            try pair?.connect("tcp://localhost:5556");
+    public func sendData(_ data: Data){
+        do {
+            try getSocket()?.send(data: data)
         }
-        catch{
-            print("Connect communication error - \(error) - \(convertErrno(zmq_errno()))");
-            return false;
+        catch {
+            print("ERROR SENDING: \(error)")
         }
-        
-        return true;
+    }
+    
+    //
+    
+    public func connect(){
+    
+        // first needs to connect to the FRED wifi network
+        let networkHotspot = NEHotspotConfiguration(ssid: "FRED_WIFI", passphrase: "FRED_PASSWORD", isWEP: false)
+
+        NEHotspotConfigurationManager.shared.apply(networkHotspot) { (error) in
+          // Act upon setup connection to the hotspot
+            do{
+                try self.pair?.connect("tcp://192.168.220.1:5556");
+            }
+            catch{
+                print("Connect communication error - \(error) - \(self.convertErrno(zmq_errno()))");
+            }
+        }
     }
     
     public func disconnect() -> Bool{
         var isSuccessful = true;
         
         do{
-            try pair?.disconnect("tcp://localhost:5556");
+            try pair?.disconnect("tcp://192.168.220.1:5556");
         }
         catch{
             print("Disconnect communication error - \(error) - \(convertErrno(zmq_errno()))");
@@ -66,7 +80,7 @@ class CommunicationClass{
         return isSuccessful;
     }
     
-    public func getSocket() -> SwiftyZeroMQ.Socket?{
+    private func getSocket() -> SwiftyZeroMQ.Socket?{
         return pair;
     }
     
