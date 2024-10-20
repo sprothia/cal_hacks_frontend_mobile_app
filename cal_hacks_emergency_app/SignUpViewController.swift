@@ -26,7 +26,6 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var emergencyNumber: UITextField!
     
-    @IBOutlet weak var additionalNotes: UITextView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,7 +42,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func signUp(_ sender: Any) {
-        signUpUser(email: email.text!, password: password.text! , firstName: firstName.text!, lastName: lastName.text!, age: age.text!, city: city.text!, emergencyNumber: emergencyNumber.text!, additionalNotes: additionalNotes.text!)
+        signUpUser(email: email.text!, password: password.text! , firstName: firstName.text!, lastName: lastName.text!, age: age.text!, city: city.text!, emergencyNumber: emergencyNumber.text!)
         
 
         print("Trying to sign up user!")
@@ -65,7 +64,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         CommunicationClass.obj.sendData(rawData)
     }
     
-    func signUpUser(email: String, password: String, firstName: String, lastName: String, age: String, city: String, emergencyNumber: String, additionalNotes: String) {
+    func signUpUser(email: String, password: String, firstName: String, lastName: String, age: String, city: String, emergencyNumber: String) {
         
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if let error = error {
@@ -82,7 +81,6 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
                 "age": age,
                 "address": city,
                 "emergencyNumber": emergencyNumber,
-                "additionalNotes": additionalNotes,
             ]
             
             let db = Firestore.firestore()
@@ -108,7 +106,6 @@ class SignUpViewController: UIViewController, UITextFieldDelegate {
         age.resignFirstResponder()
         city.resignFirstResponder()
         emergencyNumber.resignFirstResponder()
-        additionalNotes.resignFirstResponder()
         
         return true
     }

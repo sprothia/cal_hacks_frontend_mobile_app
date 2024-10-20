@@ -12,6 +12,7 @@ import FirebaseAuth
 class HomeViewController: UIViewController, CLLocationManagerDelegate {
 
     @IBOutlet weak var coordinatesLbl: UILabel!
+    var currentLocation: CLLocation!
     
     @IBOutlet weak var helpBtn: UIButton!
     let locationManager = CLLocationManager()
@@ -23,11 +24,17 @@ class HomeViewController: UIViewController, CLLocationManagerDelegate {
         locationManager.requestWhenInUseAuthorization()
         helpBtn.setTitle("", for: .normal)
                 
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.desiredAccuracy = kCLLocationAccuracyBest
-            locationManager.startUpdatingLocation()
+        if
+           CLLocationManager.authorizationStatus() == .authorizedWhenInUse ||
+           CLLocationManager.authorizationStatus() ==  .authorizedAlways
+        {
+            currentLocation = locationManager.location
+            let roundedLat = Double(round(1000 * currentLocation.coordinate.latitude.magnitude) / 1000)
+            let roundedLong = Double(round(1000 * currentLocation.coordinate.longitude.magnitude) / 1000)
+
+            coordinatesLbl.text = "Lat: \(roundedLat), Long: \(roundedLong)"
         }
-        
+                
         helpBtn.backgroundColor = .clear
         
         helpBtn.layer.shadowColor = UIColor.black.cgColor
