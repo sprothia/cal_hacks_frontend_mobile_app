@@ -1,6 +1,9 @@
-Pods/*
-Podfile.lock
 *.DS_Store
+cal_hacks_emergency_app/GoogleService-Info.plist
+*.xcconfig
+*.xcuserstate
+*.xcworkspacedata
 *.xcodeproj
 *.xcworkspace
-*.plist
+Podfile.lock
+Pods

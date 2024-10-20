@@ -8,12 +8,13 @@
 import SwiftyZeroMQ5
 import SwiftMsgPack
 import Network
+import NetworkExtension
 
 class CommunicationClass{
     static public let obj = CommunicationClass();
         
     internal var context : SwiftyZeroMQ.Context?;
-    internal var sub : SwiftyZeroMQ.Socket?;
+    internal var pair : SwiftyZeroMQ.Socket?;
     
     internal var connectionString : String?;
             
@@ -23,7 +24,7 @@ class CommunicationClass{
         printVersion();
         do{
             context = try SwiftyZeroMQ.Context();
-            sub = try context?.socket(.subscribe);
+            pair = try context?.socket(.pair);
         }
         catch{
             print("Unable to create ZeroMQ context");
@@ -38,13 +39,10 @@ class CommunicationClass{
     
     //
     
-    public func connect(_ address: String) -> Bool{
-        
-        connectionString = address
-                    
+    public func connect() -> Bool{
+                            
         do{
-            try sub?.connect(connectionString!);
-            try sub?.setSubscribe("");
+            try pair?.connect("tcp://localhost:5556");
         }
         catch{
             print("Connect communication error - \(error) - \(convertErrno(zmq_errno()))");
@@ -58,7 +56,7 @@ class CommunicationClass{
         var isSuccessful = true;
         
         do{
-            try sub?.disconnect(connectionString!);
+            try pair?.disconnect("tcp://localhost:5556");
         }
         catch{
             print("Disconnect communication error - \(error) - \(convertErrno(zmq_errno()))");
@@ -66,6 +64,10 @@ class CommunicationClass{
         }
         
         return isSuccessful;
+    }
+    
+    public func getSocket() -> SwiftyZeroMQ.Socket?{
+        return pair;
     }
     
     public func convertErrno(_ errorn: Int32) -> String{
